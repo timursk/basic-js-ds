@@ -1,6 +1,6 @@
 const { NotImplementedError } = require('../extensions/index.js');
 
-// const { ListNode } = require('../extensions/list-node.js');
+const { ListNode } = require('../extensions/list-node.js');
 
 /**
  * Implement the Queue with a given interface via linked list (use ListNode extension above).
@@ -14,20 +14,72 @@ const { NotImplementedError } = require('../extensions/index.js');
  * queue.getUnderlyingList() // returns { value: 3, next: null }
  */
 class Queue {
-
-  getUnderlyingList() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  constructor() {
+    this.root = null;
   }
 
-  enqueue(/* value */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  getUnderlyingList() {
+    const nodes = [];
+    let node = this.root;
+
+    while(node) {
+      nodes.push(node);
+      node = node.next;
+    }
+
+    let newRoot = null;
+    let newRootNode = null;
+
+    for (let i = (nodes.length - 1); i >= 0 ; i--) {
+      const node = nodes[i];
+      node.next = null;
+
+      if (!newRoot) {
+        newRoot = node;
+        newRootNode = newRoot;
+        continue; 
+      }
+
+      newRootNode.next = node;
+      newRootNode = newRootNode.next;
+    }
+
+    return newRoot;
+  }
+
+  enqueue(value) {
+    if (!this.root) {
+      this.root = new ListNode(value);
+      return;
+    }
+
+    const tmp = this.root;
+    this.root = new ListNode(value);
+    this.root.next = tmp;
   }
 
   dequeue() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+    let node = this.root;
+    let result = null;
+
+    while (node && node.next && node.next.next) {
+      node = node.next;
+    }
+
+    if (node && node.next && node.next.next) {
+      result = node.next.next.value;
+      node.next.next = null;
+    }
+    else if (node && node.next) {
+      result = node.next.value;
+      node.next = null;
+    }
+    else if (node) {
+      result = this.root.value;
+      this.root = null;
+    }
+
+    return result;
   }
 }
 
